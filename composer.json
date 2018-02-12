@@ -5,8 +5,15 @@
   "description": "Give - a WordPress Donation Plugin and Fundraising Platform",
   "homepage": "https://givewp.com/",
   "require": {
-    "composer/installers": "~1.2"
+    "composer/installers": "~1.2",
+    "Sidsector9/Give-dummy": "dev-master"
   },
+  "repositories": [
+    {
+      "type": "vcs",
+      "url": "https://github.com/Sidsector9/Give-dummy"
+    }
+  ],
   "require-dev": {
     "squizlabs/php_codesniffer": "*",
     "wp-coding-standards/wpcs": "^0.13.1",
@@ -25,7 +32,9 @@
       "\"vendor/bin/phpcs\" --config-set installed_paths vendor/wp-coding-standards/wpcs"
     ],
     "post-update-cmd": [
-      "\"vendor/bin/phpcs\" --config-set installed_paths vendor/wp-coding-standards/wpcs"
+      "\"vendor/bin/phpcs\" --config-set installed_paths vendor/wp-coding-standards/wpcs",
+      "npm install",
+      "sh vendor/sidsector9/give-dummy/bin/install-git-hooks"
     ]
   }
 }
