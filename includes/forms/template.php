@@ -83,11 +83,14 @@ function give_get_donation_form( $args = array() ) {
 	?>
 	<div id="give-form-<?php echo $form->ID; ?>-wrap" class="<?php echo $form_wrap_classes; ?>">
 
-		<?php if ( $form->is_close_donation_form() ) {
+		<?php
+		$form_title = apply_filters( 'give_form_title', '<h2 class="give-form-title">' . get_the_title( $form_id ) . '</h2>' );
+
+		if ( $form->is_close_donation_form() ) {
 
 			// Get Goal thank you message.
 			$goal_achieved_message = get_post_meta( $form->ID, '_give_form_goal_achieved_message', true );
-			$goal_achieved_message = ! empty( $goal_achieved_message ) ? apply_filters( 'the_content', $goal_achieved_message ) : '';
+			$goal_achieved_message = ! empty( $goal_achieved_message ) ? $form_title . apply_filters( 'the_content', $goal_achieved_message ) : $form_title;
 
 			// Print thank you message.
 			echo apply_filters( 'give_goal_closed_output', $goal_achieved_message, $form->ID, $form );
@@ -98,7 +101,6 @@ function give_get_donation_form( $args = array() ) {
 			 * 1. if show_title params set to true
 			 * 2. if admin set form display_style to button
 			 */
-			$form_title = apply_filters( 'give_form_title', '<h2 class="give-form-title">' . get_the_title( $form_id ) . '</h2>' );
 			if (
 				(
 					( isset( $args['show_title'] ) && $args['show_title'] == true )
