@@ -234,6 +234,8 @@ final class Give_Shortcode_Button {
 	private function is_add_button() {
 		global $pagenow;
 
+		$allow_shortcode_button = true;
+		$active_plugins         = get_option( 'active_plugins' );
 		$shortcode_button_pages = apply_filters( 'give_shortcode_button_pages', array(
 			'post.php',
 			'page.php',
@@ -243,12 +245,51 @@ final class Give_Shortcode_Button {
 			'edit.php?post_type=page',
 		) );
 
+
+		/**
+		 * This filter is used to disable the shortcode
+		 * button depending on which plugin is active and
+		 * the query parameters on a specific page.
+		 *
+		 * @since 2.1.1
+		 */
+		$active_plugin_params = apply_filters( 'give_query_params_for_shortcode_button', array() );
+
+		/**
+		 * Loop through all the query parameters and if
+		 * there is a match then set $allow_shortcode_button
+		 * to 'true'.
+		 */
+		foreach ( $active_plugin_params as $plugin_name => $query_params ) {
+
+			/**
+			 * If the passed plugin is not in the array of activated
+			 * plugins, then continue.
+			 */
+			if ( ! in_array( $plugin_name, $active_plugins, true ) ) {
+				continue;
+			}
+
+			/**
+			 * If the concerned query parameter is set and mathes
+			 * the value, then set the value of $allow_shortcode_button
+			 * to true to disable the Shortcode Button.
+			 */
+			foreach ( $query_params as $key => $value ) {
+				if ( isset( $_GET[ $key ] ) && $value === give_clean( $_GET[ $key ] ) ) {
+					$allow_shortcode_button = false;
+					break;
+				}
+			}
+		}
+
 		// Only run in admin post/page creation and edit screens
 		if (
 			! is_admin()
 			|| ! in_array( $pagenow, $shortcode_button_pages )
 			|| ! apply_filters( 'give_shortcode_button_condition', true )
 			|| empty( self::$shortcodes )
+			|| ! $allow_shortcode_button
 		) {
 			return false;
 		}
