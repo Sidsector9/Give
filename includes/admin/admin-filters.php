@@ -260,3 +260,25 @@ function give_bc_1817_cleanup_user_roles( $caps ) {
 }
 
 add_filter( 'user_has_cap', 'give_bc_1817_cleanup_user_roles' );
+
+
+/**
+ * Disables the add shortcode button on specific pages
+ * depending on the query parameters and the which plugins
+ * are active.
+ *
+ * @param array $active_plugin_params Array of active plugin mapped to query parameters of a specific page.
+ *
+ * @since 2.1.1
+ *
+ * @return array
+ */
+function give_disable_shortcode_button_by_plugin( $active_plugin_params ) {
+	$active_plugin_params['elementor/elementor.php'] = array(
+		'action' => 'elementor'
+	);
+
+	return $active_plugin_params;
+}
+
+add_filter( 'give_query_params_for_shortcode_button', 'give_disable_shortcode_button_by_plugin' );
